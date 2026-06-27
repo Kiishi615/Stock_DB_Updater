@@ -1,0 +1,31 @@
+name: Daily Stock Price Ingestion
+
+on:
+  workflow_dispatch:  # Manual trigger
+  schedule:
+    - cron: '0 16 * * 1-5'  # Mon-Fri at 4:00 PM UTC (5:00 PM WAT)
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  TELEGRAM_API_KEY: ${{ secrets.TELEGRAM_API_KEY }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+jobs:
+  ingest-stock-prices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install tradingview-screener psycopg2-binary python-dotenv
+
+      - name: Run stock ingestion
+        run: python daily_stock_ingest.py
