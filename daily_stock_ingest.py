@@ -33,8 +33,8 @@ load_dotenv(SCRIPT_DIR / ".env")
 
 MAPPING_FILE = SCRIPT_DIR / "stock_mapping.json"
 DATABASE_URL = os.environ.get("DATABASE_URL")
-TELEGRAM_API_KEY = os.environ.get("TELEGRAM_API_KEY")
-TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
+TELEGRAM_API_KEY = (os.environ.get("TELEGRAM_API_KEY") or "").strip() or None
+TELEGRAM_CHAT_ID = (os.environ.get("TELEGRAM_CHAT_ID") or "").strip() or None
 
 # West Africa Time = UTC+1
 WAT = timezone(timedelta(hours=1))
@@ -98,21 +98,25 @@ def fetch_all_nigerian_stocks() -> dict[str, dict]:
             }
     print(f"  Fetched {len(result)} stocks from TradingView.")
 
-    # 2. Indices — direct ticker query
-    _, idf = (
-        Query()
-        .select("name", "close", "volume")
-        .set_tickers(*INDEX_TICKERS)
-        .get_scanner_data()
-    )
+    # 2. Indices — direct ticker query (must also set market for correct endpoint)
     idx_count = 0
-    if not idf.empty:
-        for _, row in idf.iterrows():
-            result[row["ticker"]] = {
-                "close": row.get("close"),
-                "volume": row.get("volume"),
-            }
-            idx_count += 1
+    try:
+        _, idf = (
+            Query()
+            .select("name", "close", "volume")
+            .set_markets("nigeria")
+            .set_tickers(*INDEX_TICKERS)
+            .get_scanner_data()
+        )
+        if not idf.empty:
+            for _, row in idf.iterrows():
+                result[row["ticker"]] = {
+                    "close": row.get("close"),
+                    "volume": row.get("volume"),
+                }
+                idx_count += 1
+    except Exception as e:
+        print(f"  WARNING: Index fetch failed: {e}")
     print(f"  Fetched {idx_count} indices from TradingView.")
 
     return result
