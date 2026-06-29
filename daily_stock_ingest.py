@@ -98,13 +98,12 @@ def fetch_all_nigerian_stocks() -> dict[str, dict]:
             }
     print(f"  Fetched {len(result)} stocks from TradingView.")
 
-    # 2. Indices — direct ticker query (must also set market for correct endpoint)
+    # 2. Indices — direct ticker query (NO set_markets — it filters out most indices)
     idx_count = 0
     try:
         _, idf = (
             Query()
             .select("name", "close", "volume")
-            .set_markets("nigeria")
             .set_tickers(*INDEX_TICKERS)
             .get_scanner_data()
         )
