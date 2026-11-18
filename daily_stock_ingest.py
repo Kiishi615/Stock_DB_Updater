@@ -17,9 +17,13 @@ import argparse
 import json
 import math
 import os
+import re
 import sys
+import tempfile
 import time
+import unicodedata
 import urllib.request
+from urllib.parse import urlparse
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -27,7 +31,8 @@ import psycopg2
 from psycopg2.extras import execute_values
 from dotenv import load_dotenv
 from requests.exceptions import RequestException
-from tradingview_screener import Query
+import requests
+from tradingview_screener import Query, Column
 
 # ---------------------------------------------------------------------------
 # Config
@@ -36,6 +41,8 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 load_dotenv(SCRIPT_DIR / ".env")
 
 MAPPING_FILE = SCRIPT_DIR / "stock_mapping.json"
+IDENTITY_FILE = SCRIPT_DIR / "stock_identities.json"
+RECOVERY_REPORT = SCRIPT_DIR / "ticker_recovery_report.json"
 DATABASE_URL = os.environ.get("DATABASE_URL")
 TELEGRAM_API_KEY = (os.environ.get("TELEGRAM_API_KEY") or "").strip() or None
 TELEGRAM_CHAT_ID = (os.environ.get("TELEGRAM_CHAT_ID") or "").strip() or None
@@ -90,7 +97,7 @@ def fetch_all_nigerian_stocks(mapping: dict[str, str]) -> dict[str, dict]:
     tickers = list(dict.fromkeys(mapping.values()))
     for offset in range(0, len(tickers), 100):
         batch = tickers[offset:offset + 100]
-        query = (Query().select("name", "close", "volume")
+        query = (Query().select("name", "description", "isin", "type", "close", "volume")
                  .set_tickers(*batch).limit(len(batch)))
         for attempt in range(3):
             try:
@@ -104,10 +111,7 @@ def fetch_all_nigerian_stocks(mapping: dict[str, str]) -> dict[str, dict]:
             raise RuntimeError(f"TradingView response truncated: {len(df)} of {total}")
         for _, row in df.iterrows():
             if row["ticker"] in batch:
-                result[row["ticker"]] = {
-                    "close": row.get("close"),
-                    "volume": row.get("volume"),
-                }
+                result[row["ticker"]] = row.to_dict()
 
     idx_count = sum(ticker in INDEX_TICKERS for ticker in result)
     print(f"  Fetched {len(result) - idx_count} stocks/funds from TradingView.")
@@ -120,6 +124,8 @@ def missing_reason(data: dict | None) -> str | None:
     """Use the same validation for ingestion, console output and notifications."""
     if data is None:
         return "not returned by direct ticker query (check rename/delisting/coverage)"
+    if data.get("identity_error"):
+        return data["identity_error"]
     try:
         if data.get("close") is None or not math.isfinite(float(data["close"])):
             return "no finite close price"
@@ -133,6 +139,187 @@ def missing_reason(data: dict | None) -> str | None:
     except (TypeError, ValueError, OverflowError):
         return "invalid numeric data"
     return None
+
+
+def normalized_name(name: str) -> str:
+    words = re.findall(r"[a-z0-9]+", unicodedata.normalize("NFKD", name).lower())
+    # Only discard legal suffixes, never distinctive words such as 'Mortgage'.
+    return " ".join(w for w in words if w not in {"plc", "limited", "ltd"})
+
+
+def load_identities() -> dict:
+    if not IDENTITY_FILE.exists():
+        raise RuntimeError("stock_identities.json is required for verified ticker recovery")
+    return json.loads(IDENTITY_FILE.read_text(encoding="utf-8"))
+
+
+def check_identities(mapping: dict, data: dict, identities: dict):
+    """A reused ticker must not silently attach another company's prices."""
+    for name, ticker in mapping.items():
+        quote = data.get(ticker)
+        expected = identities.get(name, {}).get("isin")
+        if quote is not None and expected and quote.get("isin") != expected:
+            quote["identity_error"] = "ISIN missing or different from stored identity"
+
+
+def fetch_symbol_catalog() -> list[dict]:
+    """Candidate discovery only; candidates still require a direct quote/ISIN check."""
+    query = (Query().set_markets().select("description", "isin", "type")
+             .where(Column("exchange") == "NSENG").order_by("name").limit(1000))
+    total, frame = query.get_scanner_data(timeout=30)
+    if total > len(frame):
+        raise RuntimeError("TradingView name catalogue was truncated")
+    return frame.to_dict("records")
+
+
+def redirected_ticker(ticker: str) -> str | None:
+    """TradingView redirects some renamed symbol pages to their replacement."""
+    symbol = ticker.replace(":", "-")
+    response = requests.get(f"https://www.tradingview.com/symbols/{symbol}/", timeout=15)
+    if response.status_code == 404:
+        return None
+    response.raise_for_status()
+    url = urlparse(response.url)
+    match = re.fullmatch(r"/symbols/(NSENG-[A-Za-z0-9_]+)/?", url.path)
+    if url.hostname != "www.tradingview.com" or not match:
+        return None
+    candidate = match.group(1).replace("-", ":", 1)
+    return candidate if candidate != ticker else None
+
+
+def atomic_json(path: Path, value: dict):
+    """Replace complete JSON files; never leave a half-written mapping."""
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
+                                         prefix=path.name + ".", suffix=".tmp", delete=False) as f:
+            temp_path = Path(f.name)
+            json.dump(value, f, ensure_ascii=False, indent=2, allow_nan=False)
+            f.write("\n")
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temp_path, path)
+    finally:
+        if temp_path is not None and temp_path.exists():
+            temp_path.unlink()
+
+
+def recover_failed_tickers(mapping: dict, data: dict, identities: dict,
+                           dry_run: bool = False) -> tuple[dict, dict, dict]:
+    """Finish all recovery attempts and persist verified changes before upsert."""
+    original = mapping.copy()
+    mapping, data = mapping.copy(), {ticker: quote.copy() for ticker, quote in data.items()}
+    check_identities(mapping, data, identities)
+    failed = {name: ticker for name, ticker in mapping.items()
+              if missing_reason(data.get(ticker)) is not None}
+    report = {"checked_at": datetime.now(WAT).isoformat(), "dry_run": dry_run,
+              "initial_failures": list(failed), "recovered": [], "unresolved": [], "errors": []}
+    if not failed:
+        if not dry_run:
+            atomic_json(RECOVERY_REPORT, report)
+        return mapping, data, report
+
+    print(f"  Checking {len(failed)} failed instruments before upsert...")
+    deadline = time.monotonic() + 120
+    # A temporarily omitted quote is not necessarily a rename. Retry all failures first.
+    try:
+        data.update(fetch_all_nigerian_stocks(failed))
+        check_identities(mapping, data, identities)
+    except (RequestException, RuntimeError) as exc:
+        report["errors"].append(f"Failed-symbol retry: {type(exc).__name__}")
+    pending = {name: ticker for name, ticker in failed.items()
+               if missing_reason(data.get(ticker)) is not None}
+    for name in failed.keys() - pending.keys():
+        report["recovered"].append({"name": name, "old": failed[name], "new": failed[name],
+                                    "evidence": "original ticker returned valid data on retry"})
+    catalog = []
+    if pending:
+        try:
+            catalog = fetch_symbol_catalog()
+        except (RequestException, RuntimeError) as exc:
+            report["errors"].append(f"Name catalogue unavailable: {type(exc).__name__}")
+
+    proposals = {}
+    for name, old in pending.items():
+        if time.monotonic() >= deadline:
+            report["unresolved"].append({"name": name, "old": old,
+                                         "reason": "recovery time budget exhausted; retry next run"})
+            continue
+        identity = identities.get(name, {})
+        isin = identity.get("isin")
+        if not isin:
+            report["unresolved"].append({"name": name, "old": old,
+                                         "reason": "no stored ISIN; automatic replacement cannot verify identity"})
+            continue
+        names = {normalized_name(name), normalized_name(identity.get("tradingview_name", ""))} - {""}
+        candidates = {row["ticker"] for row in catalog
+                      if row["ticker"].startswith("NSENG:") and row["ticker"] != old
+                      and ((isin and row.get("isin") == isin)
+                           or normalized_name(row.get("description", "")) in names)}
+        # Full corporate renames may change every word. A redirect supplies another
+        # candidate, but cannot bypass the ISIN verification below.
+        if not candidates:
+            try:
+                redirect = redirected_ticker(old)
+                if redirect:
+                    candidates.add(redirect)
+            except RequestException as exc:
+                report["errors"].append(f"{name}: redirect lookup {type(exc).__name__}")
+        reason = "no replacement found"
+        if candidates:
+            try:
+                quotes = fetch_all_nigerian_stocks({ticker: ticker for ticker in sorted(candidates)})
+                verified = [ticker for ticker, quote in quotes.items()
+                            if quote.get("isin") == isin
+                            and quote.get("type") == identity.get("type")
+                            and missing_reason(quote) is None]
+                if len(verified) == 1:
+                    new = verified[0]
+                    if new in original.values():
+                        reason = "replacement ticker already belongs to another mapped instrument"
+                    else:
+                        proposals[name] = (old, new, quotes[new])
+                        continue
+                else:
+                    reason = "ambiguous replacements" if len(verified) > 1 else "no candidate passed ISIN/type/quote checks"
+            except (RequestException, RuntimeError) as exc:
+                reason = f"replacement quote unavailable: {type(exc).__name__}"
+        report["unresolved"].append({"name": name, "old": old, "reason": reason,
+                                     "candidates": sorted(candidates)})
+
+    for name, (old, new, quote) in proposals.items():
+        if sum(proposal[1] == new for proposal in proposals.values()) > 1:
+            report["unresolved"].append({"name": name, "old": old, "reason": "replacement collision"})
+            continue
+        mapping[name] = new
+        data[new] = quote
+        report["recovered"].append({"name": name, "old": old, "new": new,
+                                    "tradingview_name": quote.get("description"),
+                                    "isin": quote["isin"], "evidence": "same ISIN and type; valid direct quote"})
+        print(f"  Verified recovery: {name}: {old} -> {new} ({quote.get('description')})")
+
+    if not dry_run:
+        # Do not overwrite a manual edit made while network requests were running.
+        if mapping != original:
+            on_disk = json.loads(MAPPING_FILE.read_text(encoding="utf-8"))
+            if {k: v for k, v in on_disk.items() if v} != original:
+                raise RuntimeError("Mapping changed during recovery; refusing to overwrite it")
+            on_disk_identities = json.loads(IDENTITY_FILE.read_text(encoding="utf-8"))
+            if on_disk_identities != identities:
+                raise RuntimeError("Identities changed during recovery; refusing to overwrite them")
+            updated_identities = {name: identity.copy() for name, identity in identities.items()}
+            for item in report["recovered"]:
+                if item["old"] != item["new"]:
+                    updated_identities[item["name"]].update(
+                        ticker=item["new"], tradingview_name=item["tradingview_name"])
+            # The ISIN remains unchanged. Saving metadata first is safe even if
+            # the subsequent mapping replacement fails: no rows are upserted.
+            atomic_json(IDENTITY_FILE, updated_identities)
+            atomic_json(MAPPING_FILE, {**on_disk, **mapping})
+        atomic_json(RECOVERY_REPORT, report)
+    for item in report["unresolved"]:
+        print(f"  Unresolved: {item['name']}: {item['reason']}")
+    return mapping, data, report
 
 
 # ---------------------------------------------------------------------------
@@ -238,6 +425,11 @@ def send_telegram_report(result: dict):
         for name in result["missing"][:5]:
             lines.append(f"    - {name}")
 
+    if result.get("recovered"):
+        lines.append(f"  Tickers recovered: *{len(result['recovered'])}*")
+        for item in result["recovered"][:5]:
+            lines.append(f"    - {item['name']}: {item['old']} -> {item['new']}")
+
     lines.append("")
     lines.append(f"Elapsed: *{result['elapsed']:.1f}s*")
 
@@ -274,7 +466,7 @@ def send_telegram_report(result: dict):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dry-run", action="store_true",
-                        help="Fetch and validate only; no database writes or notifications")
+                        help="Fetch and validate recovery; no file/database writes or notifications")
     args = parser.parse_args(argv)
     start = time.time()
     now = datetime.now(WAT)
@@ -294,26 +486,25 @@ def main(argv=None):
     # 1. Load mapping
     print("[1/5] Loading stock mapping...")
     mapping = load_mapping()
+    identities = load_identities()
 
     # 2. Fetch from TradingView
     print("\n[2/5] Fetching from TradingView Screener...")
     tv_data = fetch_all_nigerian_stocks(mapping)
-    if not tv_data:
-        print("  No data received. Exiting.")
-        sys.exit(1)
+
+    # Every failure is retried and checked for a verified rename before building rows.
+    mapping, tv_data, recovery = recover_failed_tickers(mapping, tv_data, identities, args.dry_run)
 
     # 3. Build rows
     print("\n[3/5] Matching stocks...")
     rows = build_rows(mapping, tv_data, today)
-    if not rows:
-        print("  No rows to upsert. Exiting.")
-        sys.exit(1)
 
     # Count stocks vs indices
     index_names = {name for name, ticker in mapping.items() if ticker in INDEX_TICKERS}
     indices_upserted = sum(1 for r in rows if r[0] in index_names)
     stocks_upserted = len(rows) - indices_upserted
-    missing = [f"{name} ({ticker}): {reason}" for name, ticker in mapping.items()
+    unresolved_reasons = {item["name"]: item["reason"] for item in recovery.get("unresolved", [])}
+    missing = [f"{name} ({ticker}): {unresolved_reasons.get(name, reason)}" for name, ticker in mapping.items()
                if (reason := missing_reason(tv_data.get(ticker))) is not None]
     errors = [f"{len(missing)} mapped instruments have missing/invalid data"] if missing else []
 
@@ -324,7 +515,7 @@ def main(argv=None):
 
     # 4. Upsert
     print(f"\n[4/5] Upserting {len(rows)} rows to Postgres...")
-    count = upsert_to_postgres(rows)
+    count = upsert_to_postgres(rows) if rows else 0
     if count != len(rows):
         errors.append(f"Database upsert failed: {count}/{len(rows)} rows written")
         stocks_upserted = indices_upserted = 0
@@ -351,6 +542,7 @@ def main(argv=None):
         "missing": missing,
         "elapsed": elapsed,
         "errors": errors,
+        "recovered": recovery["recovered"],
     })
     return 1 if errors else 0
 

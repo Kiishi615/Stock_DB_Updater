@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: '0 16 * * 1-5'  # Mon-Fri at 4:00 PM UTC (5:00 PM WAT)
 
+# Serialise scheduled/manual runs on the same branch so mapping repairs do not race.
+concurrency:
+  group: stock-ingestion-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   TELEGRAM_API_KEY: ${{ secrets.TELEGRAM_API_KEY }}
@@ -13,7 +18,9 @@ env:
 jobs:
   ingest-stock-prices:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
+    permissions:
+      contents: write  # Persist verified ticker repairs for the next checkout.
 
     steps:
       - name: Checkout
@@ -29,3 +36,24 @@ jobs:
 
       - name: Run stock ingestion
         run: python daily_stock_ingest.py
+
+      - name: Save verified mapping repairs
+        if: ${{ always() && !cancelled() }}
+        shell: bash
+        run: |
+          if git diff --quiet -- stock_mapping.json stock_identities.json; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- stock_mapping.json stock_identities.json
+          git commit -m "Update verified TradingView ticker mappings"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Upload ticker recovery report
+        if: ${{ always() && hashFiles('ticker_recovery_report.json') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ticker-recovery-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ticker_recovery_report.json
+          retention-days: 30

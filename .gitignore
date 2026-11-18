@@ -4,3 +4,5 @@ __pycache__/
 db/
 data/
 .venv/
+ticker_recovery_report.json
+*.json.*.tmp
