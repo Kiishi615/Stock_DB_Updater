@@ -4,6 +4,7 @@ from TradingView Screener and upsert them into the Postgres stock_prices table.
 
 Usage:
     python daily_stock_ingest.py
+    python daily_stock_ingest.py --dry-run
 
 Prerequisites:
     pip install tradingview-screener psycopg2-binary python-dotenv
@@ -12,7 +13,9 @@ Set in .env:
     DATABASE_URL=postgresql://user:pass@host:5432/dbname
 """
 
+import argparse
 import json
+import math
 import os
 import sys
 import time
@@ -23,6 +26,7 @@ from pathlib import Path
 import psycopg2
 from psycopg2.extras import execute_values
 from dotenv import load_dotenv
+from requests.exceptions import RequestException
 from tradingview_screener import Query
 
 # ---------------------------------------------------------------------------
@@ -62,7 +66,7 @@ def load_mapping() -> dict[str, str]:
 # ---------------------------------------------------------------------------
 # Fetch from TradingView
 # ---------------------------------------------------------------------------
-# Index tickers don't appear in .set_markets("nigeria") — must query directly
+# Index tickers are used for reporting; all instruments are queried directly.
 INDEX_TICKERS = [
     "NSENG:ASI",
     "NSENG:NGX30",
@@ -74,51 +78,61 @@ INDEX_TICKERS = [
 ]
 
 
-def fetch_all_nigerian_stocks() -> dict[str, dict]:
+def fetch_all_nigerian_stocks(mapping: dict[str, str]) -> dict[str, dict]:
     """
-    Fetch close + volume for all Nigerian stocks AND indices.
-    Two API calls: one market scan (stocks) + one targeted query (indices).
+    Fetch every mapped instrument directly, including funds and indices.
+    Country scans omit some otherwise available symbols. Explicit tickers use
+    the global scanner; do not add set_markets("nigeria") to these queries.
     Returns {ticker: {"close": float, "volume": int}, ...}
     """
     result = {}
 
-    # 1. Stocks — market scan
-    _, df = (
-        Query()
-        .select("name", "close", "volume")
-        .set_markets("nigeria")
-        .limit(300)
-        .get_scanner_data()
-    )
-    if not df.empty:
+    tickers = list(dict.fromkeys(mapping.values()))
+    for offset in range(0, len(tickers), 100):
+        batch = tickers[offset:offset + 100]
+        query = (Query().select("name", "close", "volume")
+                 .set_tickers(*batch).limit(len(batch)))
+        for attempt in range(3):
+            try:
+                total, df = query.get_scanner_data(timeout=30)
+                break
+            except RequestException:
+                if attempt == 2:
+                    raise
+                time.sleep(2 ** attempt)
+        if total > len(df):
+            raise RuntimeError(f"TradingView response truncated: {len(df)} of {total}")
         for _, row in df.iterrows():
-            result[row["ticker"]] = {
-                "close": row.get("close"),
-                "volume": row.get("volume"),
-            }
-    print(f"  Fetched {len(result)} stocks from TradingView.")
-
-    # 2. Indices — direct ticker query (NO set_markets — it filters out most indices)
-    idx_count = 0
-    try:
-        _, idf = (
-            Query()
-            .select("name", "close", "volume")
-            .set_tickers(*INDEX_TICKERS)
-            .get_scanner_data()
-        )
-        if not idf.empty:
-            for _, row in idf.iterrows():
+            if row["ticker"] in batch:
                 result[row["ticker"]] = {
                     "close": row.get("close"),
                     "volume": row.get("volume"),
                 }
-                idx_count += 1
-    except Exception as e:
-        print(f"  WARNING: Index fetch failed: {e}")
+
+    idx_count = sum(ticker in INDEX_TICKERS for ticker in result)
+    print(f"  Fetched {len(result) - idx_count} stocks/funds from TradingView.")
     print(f"  Fetched {idx_count} indices from TradingView.")
 
     return result
+
+
+def missing_reason(data: dict | None) -> str | None:
+    """Use the same validation for ingestion, console output and notifications."""
+    if data is None:
+        return "not returned by direct ticker query (check rename/delisting/coverage)"
+    try:
+        if data.get("close") is None or not math.isfinite(float(data["close"])):
+            return "no finite close price"
+        if float(data["close"]) <= 0:
+            return "non-positive close price"
+        volume = data.get("volume")
+        # Missing volume is valid for indices and inactive trading sessions.
+        if volume is not None and not math.isnan(float(volume)):
+            if not math.isfinite(float(volume)) or float(volume) < 0:
+                return "invalid volume"
+    except (TypeError, ValueError, OverflowError):
+        return "invalid numeric data"
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -133,35 +147,28 @@ def build_rows(
     Match DB stock names to TradingView data via the mapping.
     Returns list of (stock_name, date, volume, price) tuples.
     """
-    # Reverse mapping: tv_ticker → db_stock_name
-    ticker_to_name = {v: k for k, v in mapping.items()}
-
     rows = []
     matched = 0
     missing = []
 
-    for ticker, name in ticker_to_name.items():
-        if ticker in tv_data:
+    for name, ticker in mapping.items():
+        reason = missing_reason(tv_data.get(ticker))
+        if reason is None:
             data = tv_data[ticker]
             close = data.get("close")
             volume = data.get("volume")
 
-            # Skip if no price data (stock might be suspended)
-            if close is None:
-                missing.append((name, ticker, "no close price"))
-                continue
-
-            vol = int(volume) if volume is not None else None
-            prc = float(close) if close is not None else None
+            vol = int(float(volume)) if volume is not None and not math.isnan(float(volume)) else None
+            prc = float(close)
 
             rows.append((name, trade_date, vol, prc))
             matched += 1
         else:
-            missing.append((name, ticker, "not in TV response"))
+            missing.append((name, ticker, reason))
 
-    print(f"  Matched: {matched} stocks")
+    print(f"  Matched: {matched} instruments")
     if missing:
-        print(f"  Missing: {len(missing)} stocks (no data from TradingView)")
+        print(f"  Missing: {len(missing)} instruments (missing/invalid TradingView data)")
         for name, ticker, reason in missing[:10]:
             print(f"    - {name} ({ticker}): {reason}")
         if len(missing) > 10:
@@ -264,13 +271,17 @@ def send_telegram_report(result: dict):
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Fetch and validate only; no database writes or notifications")
+    args = parser.parse_args(argv)
     start = time.time()
     now = datetime.now(WAT)
     today = now.strftime("%Y-%m-%d")
 
     # Skip weekends -- Nigerian Stock Exchange is closed Sat/Sun
-    if now.weekday() >= 5:  # 5=Saturday, 6=Sunday
+    if now.weekday() >= 5 and not args.dry_run:
         print(f"Weekend ({now.strftime('%A')}) -- markets closed. Skipping.")
         sys.exit(0)
 
@@ -286,7 +297,7 @@ def main():
 
     # 2. Fetch from TradingView
     print("\n[2/5] Fetching from TradingView Screener...")
-    tv_data = fetch_all_nigerian_stocks()
+    tv_data = fetch_all_nigerian_stocks(mapping)
     if not tv_data:
         print("  No data received. Exiting.")
         sys.exit(1)
@@ -302,10 +313,21 @@ def main():
     index_names = {name for name, ticker in mapping.items() if ticker in INDEX_TICKERS}
     indices_upserted = sum(1 for r in rows if r[0] in index_names)
     stocks_upserted = len(rows) - indices_upserted
+    missing = [f"{name} ({ticker}): {reason}" for name, ticker in mapping.items()
+               if (reason := missing_reason(tv_data.get(ticker))) is not None]
+    errors = [f"{len(missing)} mapped instruments have missing/invalid data"] if missing else []
+
+    if args.dry_run:
+        print(f"\nDRY RUN: {stocks_upserted} stocks/funds + {indices_upserted} indices "
+              f"= {len(rows)}/{len(mapping)} valid rows. No writes or notifications.")
+        return 1 if missing else 0
 
     # 4. Upsert
     print(f"\n[4/5] Upserting {len(rows)} rows to Postgres...")
     count = upsert_to_postgres(rows)
+    if count != len(rows):
+        errors.append(f"Database upsert failed: {count}/{len(rows)} rows written")
+        stocks_upserted = indices_upserted = 0
 
     elapsed = time.time() - start
     print()
@@ -319,10 +341,6 @@ def main():
     print("=" * 60)
 
     # 5. Telegram report (AFTER upsert)
-    # Collect missing stocks for the report
-    ticker_to_name = {v: k for k, v in mapping.items()}
-    missing = [name for ticker, name in ticker_to_name.items() if ticker not in tv_data]
-
     print("\n[5/5] Sending Telegram report...")
     send_telegram_report({
         "date": today,
@@ -332,9 +350,10 @@ def main():
         "total_upserted": count,
         "missing": missing,
         "elapsed": elapsed,
-        "errors": [],
+        "errors": errors,
     })
+    return 1 if errors else 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
