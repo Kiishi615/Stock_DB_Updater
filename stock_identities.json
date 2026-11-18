@@ -1,0 +1,818 @@
+{
+  "AVA Infrastructure Fund": {
+    "ticker": "NSENG:AVAIF",
+    "tradingview_name": "AVA Infrastructure Fund Units NGN",
+    "isin": "NGAVAIF00001",
+    "type": "fund"
+  },
+  "Abbey Mortgage Bank Plc": {
+    "ticker": "NSENG:ABBEYBANK",
+    "tradingview_name": "Abbey Bank Plc",
+    "isin": "NGABBEY00001",
+    "type": "stock"
+  },
+  "Academy Press Plc": {
+    "ticker": "NSENG:ACADEMY",
+    "tradingview_name": "Academy Press PLC",
+    "isin": "NGACADEMY008",
+    "type": "stock"
+  },
+  "Access Holdings Plc": {
+    "ticker": "NSENG:ACCESSCORP",
+    "tradingview_name": "Access Holdings Plc",
+    "isin": "NGACCESS0005",
+    "type": "stock"
+  },
+  "Africa Prudential Plc": {
+    "ticker": "NSENG:AFRIPRUD",
+    "tradingview_name": "Africa Prudential Plc",
+    "isin": "NGAFRIPRUD04",
+    "type": "stock"
+  },
+  "African Alliance Insurance Company Plc": {
+    "ticker": "NSENG:AFRINSURE",
+    "tradingview_name": "African Alliance Insurance PLC",
+    "isin": "NGAFRINSURE4",
+    "type": "stock"
+  },
+  "Aiico Insurance Plc": {
+    "ticker": "NSENG:AIICO",
+    "tradingview_name": "Aiico Insurance PLC",
+    "isin": "NGAIICO00006",
+    "type": "stock"
+  },
+  "Airtel Africa Plc": {
+    "ticker": "NSENG:AIRTELAFRI",
+    "tradingview_name": "Airtel Africa Plc",
+    "isin": "GB00BKDRYJ47",
+    "type": "stock"
+  },
+  "Aluminium Extrusion Industries Plc": {
+    "ticker": "NSENG:ALEX",
+    "tradingview_name": "Aluminium Extrusion Industries PLC",
+    "isin": "NGALEX000003",
+    "type": "stock"
+  },
+  "Aradel Holdings Plc": {
+    "ticker": "NSENG:ARADEL",
+    "tradingview_name": "Aradel Holdings Plc",
+    "isin": "NGARADEL0004",
+    "type": "stock"
+  },
+  "Austin Laz & Company Plc": {
+    "ticker": "NSENG:AUSTINLAZ",
+    "tradingview_name": "Austin Laz & Co. Plc",
+    "isin": "NGAUSTINLAZ9",
+    "type": "stock"
+  },
+  "Axa Mansard Insurance Plc": {
+    "ticker": "NSENG:MANSARD",
+    "tradingview_name": "AXA Mansard Insurance PLC",
+    "isin": "NGGTASSURE05",
+    "type": "stock"
+  },
+  "BUA Cement Plc": {
+    "ticker": "NSENG:BUACEMENT",
+    "tradingview_name": "BUA Cement Plc",
+    "isin": "NGBUACEMENT3",
+    "type": "stock"
+  },
+  "BUA Foods PLC": {
+    "ticker": "NSENG:BUAFOODS",
+    "tradingview_name": "BUA Foods PLC",
+    "isin": "NGBUAFOODS04",
+    "type": "stock"
+  },
+  "Berger Paints Plc": {
+    "ticker": "NSENG:BERGER",
+    "tradingview_name": "Berger Paints Nigeria PLC",
+    "isin": "NGBERGER0000",
+    "type": "stock"
+  },
+  "Beta Glass Plc": {
+    "ticker": "NSENG:BETAGLAS",
+    "tradingview_name": "Beta Glass Plc.",
+    "isin": "NGBETAGLAS04",
+    "type": "stock"
+  },
+  "C & I Leasing Plc": {
+    "ticker": "NSENG:CILEASING",
+    "tradingview_name": "C&I Leasing PLC",
+    "isin": "NGCILEASING2",
+    "type": "stock"
+  },
+  "CAP Plc": {
+    "ticker": "NSENG:CAP",
+    "tradingview_name": "Chemical & Allied Products Plc",
+    "isin": "NGCAP0000009",
+    "type": "stock"
+  },
+  "CWG Plc": {
+    "ticker": "NSENG:CWG",
+    "tradingview_name": "CWG Plc",
+    "isin": "NGCWG0000002",
+    "type": "stock"
+  },
+  "Cadbury Nigeria Plc": {
+    "ticker": "NSENG:CADBURY",
+    "tradingview_name": "Cadbury Nigeria PLC",
+    "isin": "NGCADBURY001",
+    "type": "stock"
+  },
+  "Caverton Offshore Support Group Plc": {
+    "ticker": "NSENG:CAVERTON",
+    "tradingview_name": "Caverton Offshore Support Group Plc",
+    "isin": "NGCAVERTON07",
+    "type": "stock"
+  },
+  "Champion Breweries Plc": {
+    "ticker": "NSENG:CHAMPION",
+    "tradingview_name": "Champion Breweries PLC",
+    "isin": "NGCHAMPION00",
+    "type": "stock"
+  },
+  "Chams Holding Company Plc": {
+    "ticker": "NSENG:CHAMS",
+    "tradingview_name": "Chams Holding Company Plc",
+    "isin": "NGCHAMS00001",
+    "type": "stock"
+  },
+  "Chapel Hill Denham Nig. Infras Debt Fund": {
+    "ticker": "NSENG:NIDF",
+    "tradingview_name": "Chapel Hill Denham Lists Nigeria Infrastructure Debt Fund Units NGN",
+    "isin": "NGCHDNIDF005",
+    "type": "fund"
+  },
+  "Chellarams Plc": {
+    "ticker": "NSENG:CHELLARAM",
+    "tradingview_name": "Chellarams PLC",
+    "isin": "NGCHELLARAM5",
+    "type": "stock"
+  },
+  "Conoil Plc": {
+    "ticker": "NSENG:CONOIL",
+    "tradingview_name": "Conoil PLC",
+    "isin": "NGCONOIL0003",
+    "type": "stock"
+  },
+  "Consolidated Hallmark Holdings Plc": {
+    "ticker": "NSENG:CONHALLPLC",
+    "tradingview_name": "Consolidated Hallmark Holdings Plc",
+    "isin": "NGCONHALLPL3",
+    "type": "stock"
+  },
+  "Cornerstone Insurance Company Plc": {
+    "ticker": "NSENG:CORNERST",
+    "tradingview_name": "Cornerstone Insurance PLC",
+    "isin": "NGCORNERST03",
+    "type": "stock"
+  },
+  "Coronation Infrastructure Fund": {
+    "ticker": "NSENG:CNIF",
+    "tradingview_name": "CORONATION INFRASTRUCTURE Units NGN",
+    "isin": "NGCNIF000007",
+    "type": "fund"
+  },
+  "Coronation Insurance Plc": {
+    "ticker": "NSENG:WAPIC",
+    "tradingview_name": "Coronation Insurance Plc",
+    "isin": "NGWAPIC00004",
+    "type": "stock"
+  },
+  "Custodian Investment Plc": {
+    "ticker": "NSENG:CUSTODIAN",
+    "tradingview_name": "Custodian Investment Plc",
+    "isin": "NGCUSTODYIN6",
+    "type": "stock"
+  },
+  "Cutix Plc": {
+    "ticker": "NSENG:CUTIX",
+    "tradingview_name": "Cutix PLC",
+    "isin": "NGCUTIX00002",
+    "type": "stock"
+  },
+  "Daar Communications Plc": {
+    "ticker": "NSENG:DAARCOMM",
+    "tradingview_name": "DAAR Communications PLC",
+    "isin": "NGDAARCOMM01",
+    "type": "stock"
+  },
+  "Dangote Cement Plc": {
+    "ticker": "NSENG:DANGCEM",
+    "tradingview_name": "Dangote Cement PLC",
+    "isin": "NGDANGCEM008",
+    "type": "stock"
+  },
+  "Dangote Sugar Refineries Plc": {
+    "ticker": "NSENG:DANGSUGAR",
+    "tradingview_name": "Dangote Sugar Refinery PLC",
+    "isin": "NGDANSUGAR02",
+    "type": "stock"
+  },
+  "E-Tranzact International Plc": {
+    "ticker": "NSENG:ETRANZACT",
+    "tradingview_name": "eTranzact International Plc",
+    "isin": "NGETRANZ0005",
+    "type": "stock"
+  },
+  "Ecobank Transnational Inc": {
+    "ticker": "NSENG:ETI",
+    "tradingview_name": "Ecobank Transnational, Inc.",
+    "isin": "TG0000000132",
+    "type": "stock"
+  },
+  "EkoCorp Plc": {
+    "ticker": "NSENG:EKOCORP",
+    "tradingview_name": "Ekocorp PLC",
+    "isin": "NGECOCORP009",
+    "type": "stock"
+  },
+  "Ellah Lakes Plc": {
+    "ticker": "NSENG:ELLAHLAKES",
+    "tradingview_name": "Ellah Lakes Plc",
+    "isin": "NGELLAHLAKE8",
+    "type": "stock"
+  },
+  "Eterna Plc": {
+    "ticker": "NSENG:ETERNA",
+    "tradingview_name": "Eterna PLC",
+    "isin": "NGETERNAOIL1",
+    "type": "stock"
+  },
+  "Eunisell Interlinked Plc": {
+    "ticker": "NSENG:EUNISELL",
+    "tradingview_name": "Eunisell Interlinked Plc",
+    "isin": "NGINTERLINK3",
+    "type": "stock"
+  },
+  "FCMB Group Plc": {
+    "ticker": "NSENG:FCMB",
+    "tradingview_name": "FCMB Group Plc",
+    "isin": "NGFCMB000005",
+    "type": "stock"
+  },
+  "FORTIS GLOBAL INSURANCE PLC": {
+    "ticker": "NSENG:FTGINSURE",
+    "tradingview_name": "Fortis Global Insurance Plc",
+    "isin": "NGSTDINSURE7",
+    "type": "stock"
+  },
+  "FTN Cocoa Processors Plc": {
+    "ticker": "NSENG:FTNCOCOA",
+    "tradingview_name": "FTN Cocoa Processors Plc",
+    "isin": "NGFTNCOCOA02",
+    "type": "stock"
+  },
+  "Fidelity Bank Plc": {
+    "ticker": "NSENG:FIDELITYBK",
+    "tradingview_name": "Fidelity Bank PLC",
+    "isin": "NGFIDELITYB5",
+    "type": "stock"
+  },
+  "Fidson Healthcare Limited": {
+    "ticker": "NSENG:FIDSON",
+    "tradingview_name": "Fidson Healthcare Ltd.",
+    "isin": "NGFIDSON0006",
+    "type": "stock"
+  },
+  "First HoldCo Plc": {
+    "ticker": "NSENG:FIRSTHOLDCO",
+    "tradingview_name": "First HoldCo Plc",
+    "isin": "NGFBNH000009",
+    "type": "stock"
+  },
+  "Geregu Power PLC": {
+    "ticker": "NSENG:GEREGU",
+    "tradingview_name": "Geregu Power Plc",
+    "isin": "NGGEREGU0000",
+    "type": "stock"
+  },
+  "Guaranty Trust Holding Company Plc": {
+    "ticker": "NSENG:GTCO",
+    "tradingview_name": "Guaranty Trust Holding Company Plc",
+    "isin": "NGGTCO000002",
+    "type": "stock"
+  },
+  "Guinness Nigeria plc": {
+    "ticker": "NSENG:GUINNESS",
+    "tradingview_name": "Guinness Nigeria PLC",
+    "isin": "NGGUINNESS07",
+    "type": "stock"
+  },
+  "Haldane McCall Plc": {
+    "ticker": "NSENG:HMCALL",
+    "tradingview_name": "Haldane McCall Plc",
+    "isin": "NGHMCALL0004",
+    "type": "stock"
+  },
+  "Honeywell Flour Mills Plc": {
+    "ticker": "NSENG:HONYFLOUR",
+    "tradingview_name": "Honeywell Flour Mills Plc",
+    "isin": "NGHONYFLOUR7",
+    "type": "stock"
+  },
+  "Ikeja Hotel Plc": {
+    "ticker": "NSENG:IKEJAHOTEL",
+    "tradingview_name": "Ikeja Hotel PLC",
+    "isin": "NGIKEJAHOTL7",
+    "type": "stock"
+  },
+  "Industrial and Medical Gases Nigeria PLC": {
+    "ticker": "NSENG:IMG",
+    "tradingview_name": "Industrial and Medical Gases Nigeria PLC",
+    "isin": "NGBOCGAS0008",
+    "type": "stock"
+  },
+  "Infinity Trust Mortgage Bank Plc": {
+    "ticker": "NSENG:INFINITY",
+    "tradingview_name": "Infinity Trust Mortgage Bank Plc",
+    "isin": "NGINFINITY01",
+    "type": "stock"
+  },
+  "International Breweries Plc": {
+    "ticker": "NSENG:INTBREW",
+    "tradingview_name": "International Breweries PLC",
+    "isin": "NGINTBREW005",
+    "type": "stock"
+  },
+  "International Energy Insurance Company": {
+    "ticker": "NSENG:INTENEGINS",
+    "tradingview_name": "International Energy Insurance Co. Plc",
+    "isin": "NGINTENEGIN5",
+    "type": "stock"
+  },
+  "Jaiz Bank Plc": {
+    "ticker": "NSENG:JAIZBANK",
+    "tradingview_name": "Jaiz Bank PLC",
+    "isin": "NGJAIZBANK05",
+    "type": "stock"
+  },
+  "Japaul Gold & Ventures PLC": {
+    "ticker": "NSENG:JAPAULGOLD",
+    "tradingview_name": "Japaul Gold & Ventures PLC",
+    "isin": "NGJAPAULOIL4",
+    "type": "stock"
+  },
+  "John Holt Plc": {
+    "ticker": "NSENG:JOHNHOLT",
+    "tradingview_name": "John Holt PLC",
+    "isin": "NGJOHNHOLT05",
+    "type": "stock"
+  },
+  "Juli Plc": {
+    "ticker": "NSENG:JULI",
+    "tradingview_name": "Juli Plc",
+    "isin": "NGJULI000003",
+    "type": "stock"
+  },
+  "Julius Berger Nigeria Plc": {
+    "ticker": "NSENG:JBERGER",
+    "tradingview_name": "Julius Berger Nigeria Plc",
+    "isin": "NGJBERGER009",
+    "type": "stock"
+  },
+  "Lafarge Africa PLC": {
+    "ticker": "NSENG:HBMNG",
+    "tradingview_name": "HBM Nigeria PLC",
+    "isin": "NGWAPCO00002",
+    "type": "stock"
+  },
+  "Learn Africa Plc": {
+    "ticker": "NSENG:LEARNAFRCA",
+    "tradingview_name": "Learn Africa PLC",
+    "isin": "NGLONGMAN007",
+    "type": "stock"
+  },
+  "Legend Internet Plc": {
+    "ticker": "NSENG:LEGENDINT",
+    "tradingview_name": "LEGEND INTERNET PLC",
+    "isin": "NGLEGENDINT0",
+    "type": "stock"
+  },
+  "Linkage Assurance Plc": {
+    "ticker": "NSENG:LINKASSURE",
+    "tradingview_name": "Linkage Assurance PLC",
+    "isin": "NGLINKASSUR7",
+    "type": "stock"
+  },
+  "Livestock Feeds Plc": {
+    "ticker": "NSENG:LIVESTOCK",
+    "tradingview_name": "Livestock Feeds PLC",
+    "isin": "NGLIVESTOCK5",
+    "type": "stock"
+  },
+  "LivingTrust Mortgage Bank Plc": {
+    "ticker": "NSENG:LIVINGTRUST",
+    "tradingview_name": "LivingTrust Mortgage Bank PLC",
+    "isin": "NGOMOMORBNK6",
+    "type": "stock"
+  },
+  "MOFI Real Estate Investment Fund": {
+    "ticker": "NSENG:MOFIREIF",
+    "tradingview_name": "MOFI Real Estate Investment Fund Units NGN",
+    "isin": "NGMOFIREIF00",
+    "type": "fund"
+  },
+  "MTN Nigeria Communications Plc": {
+    "ticker": "NSENG:MTNN",
+    "tradingview_name": "MTN Nigeria Communications Plc",
+    "isin": "NGMTNN000002",
+    "type": "stock"
+  },
+  "May & Baker Nigeria Plc": {
+    "ticker": "NSENG:MAYBAKER",
+    "tradingview_name": "May & Baker Nigeria Plc",
+    "isin": "NGMAYBAKER01",
+    "type": "stock"
+  },
+  "McNichols Plc": {
+    "ticker": "NSENG:MCNICHOLS",
+    "tradingview_name": "McNichols Plc",
+    "isin": "NGMCNICHOLS7",
+    "type": "stock"
+  },
+  "Me Cure Industries Plc": {
+    "ticker": "NSENG:MECURE",
+    "tradingview_name": "Mecure Industries PLC",
+    "isin": "NGMECURE0006",
+    "type": "stock"
+  },
+  "Meyer Plc": {
+    "ticker": "NSENG:MEYER",
+    "tradingview_name": "Meyer PLC",
+    "isin": "NGMEYER00006",
+    "type": "stock"
+  },
+  "Morison Industries Plc": {
+    "ticker": "NSENG:MORISON",
+    "tradingview_name": "Morison Industries PLC",
+    "isin": "NGMORISON000",
+    "type": "stock"
+  },
+  "Mutual Benefits Assurance Plc": {
+    "ticker": "NSENG:MBENEFIT",
+    "tradingview_name": "Mutual Benefits Assurance PLC",
+    "isin": "NGMBENEFT000",
+    "type": "stock"
+  },
+  "N.E.M. Insurance Company": {
+    "ticker": "NSENG:NEM",
+    "tradingview_name": "NEM Insurance Plc",
+    "isin": "NGNEM0000005",
+    "type": "stock"
+  },
+  "NCR Nigeria Plc": {
+    "ticker": "NSENG:NCR",
+    "tradingview_name": "NCR (Nigeria) PLC",
+    "isin": "NGNCR0000008",
+    "type": "stock"
+  },
+  "Nascon Allied Industries Plc": {
+    "ticker": "NSENG:NASCON",
+    "tradingview_name": "NASCON Allied Industries Plc",
+    "isin": "NGNASCON0005",
+    "type": "stock"
+  },
+  "Neimeth International Pharmaceutical Plc": {
+    "ticker": "NSENG:NEIMETH",
+    "tradingview_name": "Neimeth International Pharmaceuticals PLC",
+    "isin": "NGNEIMETH001",
+    "type": "stock"
+  },
+  "Nestle Nigeria Plc": {
+    "ticker": "NSENG:NESTLE",
+    "tradingview_name": "Nestle Nigeria Plc",
+    "isin": "NGNESTLE0006",
+    "type": "stock"
+  },
+  "Nigerian Aviation Handling Company Plc": {
+    "ticker": "NSENG:NAHCO",
+    "tradingview_name": "Nigerian Aviation Handling Co. Plc",
+    "isin": "NGNAHCO00008",
+    "type": "stock"
+  },
+  "Nigerian Breweries Plc": {
+    "ticker": "NSENG:NB",
+    "tradingview_name": "Nigerian Breweries PLC",
+    "isin": "NGNB00000005",
+    "type": "stock"
+  },
+  "Nigerian Enamelware Company Plc": {
+    "ticker": "NSENG:ENAMELWA",
+    "tradingview_name": "Nigerian Enamelware PLC",
+    "isin": "NGENAMELWA03",
+    "type": "stock"
+  },
+  "Nigerian Exchange Group Plc": {
+    "ticker": "NSENG:NGXGROUP",
+    "tradingview_name": "Nigerian Exchange Group PLC",
+    "isin": "NGNGXGROUP09",
+    "type": "stock"
+  },
+  "Northern Nigeria Flour Mills Plc": {
+    "ticker": "NSENG:NNFM",
+    "tradingview_name": "Northern Nigeria Flour Mills Plc",
+    "isin": "NGNNFM000008",
+    "type": "stock"
+  },
+  "Oando Plc": {
+    "ticker": "NSENG:OANDO",
+    "tradingview_name": "Oando PLC",
+    "isin": "NGOANDO00002",
+    "type": "stock"
+  },
+  "Okomu Palm Oil Plc": {
+    "ticker": "NSENG:OKOMUOIL",
+    "tradingview_name": "Okomu Oil Palm Co. Plc",
+    "isin": "NGOKOMUOIL00",
+    "type": "stock"
+  },
+  "Omatek Ventures Plc": {
+    "ticker": "NSENG:OMATEK",
+    "tradingview_name": "Omatek Ventures PLC",
+    "isin": "NGOMATEX0001",
+    "type": "stock"
+  },
+  "P Z Cussons Nigeria Plc.": {
+    "ticker": "NSENG:PZ",
+    "tradingview_name": "PZ Cussons Nigeria PLC",
+    "isin": "NGPZ00000005",
+    "type": "stock"
+  },
+  "Premier Paints Plc": {
+    "ticker": "NSENG:PREMPAINTS",
+    "tradingview_name": "Premier Paints PLC",
+    "isin": "NGPREMPAINT2",
+    "type": "stock"
+  },
+  "Presco Plc": {
+    "ticker": "NSENG:PRESCO",
+    "tradingview_name": "Presco PLC",
+    "isin": "NGPRESCO0005",
+    "type": "stock"
+  },
+  "Prestige Assurance Plc": {
+    "ticker": "NSENG:PRESTIGE",
+    "tradingview_name": "Prestige Assurance Co. Plc",
+    "isin": "NGPRESTIGE00",
+    "type": "stock"
+  },
+  "R.T. Briscoe Nigeria Plc": {
+    "ticker": "NSENG:RTBRISCOE",
+    "tradingview_name": "RT Briscoe Plc",
+    "isin": "NGRTBRISCOE9",
+    "type": "stock"
+  },
+  "Redstar Express Plc": {
+    "ticker": "NSENG:REDSTAREX",
+    "tradingview_name": "Red Star Express PLC",
+    "isin": "NGREDSTAREX9",
+    "type": "stock"
+  },
+  "Royal Exchange Assurance Nigeria Plc": {
+    "ticker": "NSENG:ROYALEX",
+    "tradingview_name": "Royal Exchange PLC",
+    "isin": "NGROYALEX007",
+    "type": "stock"
+  },
+  "SFS Real Estate Investment Trust": {
+    "ticker": "NSENG:SFSREIT",
+    "tradingview_name": "SFS Real Estate Investment Trust",
+    "isin": "NGSKYESHELT8",
+    "type": "stock"
+  },
+  "Scoa Nigeria Plc": {
+    "ticker": "NSENG:SCOA",
+    "tradingview_name": "SCOA Nigeria PLC",
+    "isin": "NGSCOA000009",
+    "type": "stock"
+  },
+  "Secure Electronic Technology Plc": {
+    "ticker": "NSENG:NSLTECH",
+    "tradingview_name": "Secure Electronic Technology Plc",
+    "isin": "NGNSLTECH006",
+    "type": "stock"
+  },
+  "Seplat Energy Plc": {
+    "ticker": "NSENG:SEPLAT",
+    "tradingview_name": "Seplat Energy PLC",
+    "isin": "NGSEPLAT0008",
+    "type": "stock"
+  },
+  "Skyway Aviation Handling Company Limited": {
+    "ticker": "NSENG:SKYAVN",
+    "tradingview_name": "Skyway Aviation Handling Co. Plc",
+    "isin": "NGSKYAVN0003",
+    "type": "stock"
+  },
+  "Sovereign Trust Insurance Plc": {
+    "ticker": "NSENG:SOVRENINS",
+    "tradingview_name": "Sovereign Trust Insurance PLC",
+    "isin": "NGSOVRENINS5",
+    "type": "stock"
+  },
+  "Stanbic IBTC Holdings Plc": {
+    "ticker": "NSENG:STANBIC",
+    "tradingview_name": "Stanbic IBTC Holdings Plc",
+    "isin": "NGSTANBIC003",
+    "type": "stock"
+  },
+  "Sterling Financial Holdings Company PLC": {
+    "ticker": "NSENG:STERLINGNG",
+    "tradingview_name": "Sterling Financial Holdings Company Limited",
+    "isin": "NGSTERLNHCO9",
+    "type": "stock"
+  },
+  "Sunu Assurances Nigeria Plc": {
+    "ticker": "NSENG:SUNUASSUR",
+    "tradingview_name": "SUNU Assurances Nigeria Plc",
+    "isin": "NGSUNUASSUR6",
+    "type": "stock"
+  },
+  "Tantalizers PLC": {
+    "ticker": "NSENG:TANTALIZER",
+    "tradingview_name": "Tantalizers PLC",
+    "isin": "NGTANTALIZE1",
+    "type": "stock"
+  },
+  "The Initiates Plc": {
+    "ticker": "NSENG:TIP",
+    "tradingview_name": "Initiates PLC",
+    "isin": "NGINITSPLC05",
+    "type": "stock"
+  },
+  "TotalEnergies Marketing Nigeria Plc": {
+    "ticker": "NSENG:TOTAL",
+    "tradingview_name": "TotalEnergies Marketing Nigeria Plc",
+    "isin": "NGTOTAL00001",
+    "type": "stock"
+  },
+  "Trans-Nationwide Express Plc": {
+    "ticker": "NSENG:TRANSEXPR",
+    "tradingview_name": "Trans Nationwide Express Plc",
+    "isin": "NGTRANSEXPR4",
+    "type": "stock"
+  },
+  "Transcorp Hotels Plc": {
+    "ticker": "NSENG:TRANSCOHOT",
+    "tradingview_name": "Transcorp Hotels PLC",
+    "isin": "NGTRANSHOTL1",
+    "type": "stock"
+  },
+  "Transcorp Power Plc": {
+    "ticker": "NSENG:TRANSPOWER",
+    "tradingview_name": "Transcorp Power PLC",
+    "isin": "NGTRANSPOWE3",
+    "type": "stock"
+  },
+  "Transnational Corporation of Nigeria PLC": {
+    "ticker": "NSENG:TRANSCORP",
+    "tradingview_name": "Transnational Corporation of Nigeria PLC",
+    "isin": "NGTRANSCORP7",
+    "type": "stock"
+  },
+  "Tripple Gee and Company Plc": {
+    "ticker": "NSENG:TRIPPLEG",
+    "tradingview_name": "Tripple Gee & Company Plc.",
+    "isin": "NGTRIPPLEG04",
+    "type": "stock"
+  },
+  "U.A.C of Nigeria Plc": {
+    "ticker": "NSENG:UACN",
+    "tradingview_name": "UAC of Nigeria PLC",
+    "isin": "NGUACN000006",
+    "type": "stock"
+  },
+  "UH REAL ESTATE INVESTMENT TRUST": {
+    "ticker": "NSENG:UHREIT",
+    "tradingview_name": "UH Real Estate Investment Trust",
+    "isin": "NGUHOMREIT06",
+    "type": "stock"
+  },
+  "UPDC Plc": {
+    "ticker": "NSENG:UPDC",
+    "tradingview_name": "UPDC Plc",
+    "isin": "NGUACPROP006",
+    "type": "stock"
+  },
+  "UPDC Real Estate Investment Trust": {
+    "ticker": "NSENG:UPDCREIT",
+    "tradingview_name": "UPDC Real Estate Investment Trust",
+    "isin": "NGUPDCREIT01",
+    "type": "stock"
+  },
+  "Unilever Nigeria Plc": {
+    "ticker": "NSENG:UNILEVER",
+    "tradingview_name": "Unilever Nigeria PLC",
+    "isin": "NGUNILEVER07",
+    "type": "stock"
+  },
+  "Union Dicon Salt PLC": {
+    "ticker": "NSENG:UNIONDICON",
+    "tradingview_name": "Union Dicon Salt Plc",
+    "isin": "NGUNIONDICO1",
+    "type": "stock"
+  },
+  "United Bank for Africa PLC": {
+    "ticker": "NSENG:UBA",
+    "tradingview_name": "United Bank for Africa PLC",
+    "isin": "NGUBA0000001",
+    "type": "stock"
+  },
+  "United Capital PLC": {
+    "ticker": "NSENG:UCAP",
+    "tradingview_name": "United Capital Plc",
+    "isin": "NGUCAP000004",
+    "type": "stock"
+  },
+  "Universal Insurance Company Plc": {
+    "ticker": "NSENG:UNIVINSURE",
+    "tradingview_name": "Universal Insurance Plc",
+    "isin": "NGUNIVINSUR9",
+    "type": "stock"
+  },
+  "University Press PLC": {
+    "ticker": "NSENG:UPL",
+    "tradingview_name": "University Press PLC",
+    "isin": "NGUPL0000008",
+    "type": "stock"
+  },
+  "VFD Group PLC": {
+    "ticker": "NSENG:VFDGROUP",
+    "tradingview_name": "VFD Group PLC",
+    "isin": "NGVFDGROUP04",
+    "type": "stock"
+  },
+  "Veritas Kapital Assurance Plc": {
+    "ticker": "NSENG:VERITASKAP",
+    "tradingview_name": "Veritas Kapital Assurance Plc",
+    "isin": "NGUNITYKAP04",
+    "type": "stock"
+  },
+  "Vitafoam Nigeria": {
+    "ticker": "NSENG:VITAFOAM",
+    "tradingview_name": "Vitafoam Nigeria Plc",
+    "isin": "NGVITAFOAM00",
+    "type": "stock"
+  },
+  "Wema Bank Plc": {
+    "ticker": "NSENG:WEMABANK",
+    "tradingview_name": "Wema Bank PLC",
+    "isin": "NGWEMABANK07",
+    "type": "stock"
+  },
+  "Zenith Bank PLC": {
+    "ticker": "NSENG:ZENITHBANK",
+    "tradingview_name": "Zenith Bank PLC",
+    "isin": "NGZENITHBNK9",
+    "type": "stock"
+  },
+  "Zichis Agro-Allied Industries Plc": {
+    "ticker": "NSENG:ZICHIS",
+    "tradingview_name": "Zichis Agro-Allied Industries Plc",
+    "isin": "NGZICHIS0009",
+    "type": "stock"
+  },
+  "The Nigerian Stock Exchange All Share Index": {
+    "ticker": "NSENG:ASI",
+    "tradingview_name": "NGX All Share Index",
+    "isin": null,
+    "type": "index"
+  },
+  "The Nigerian Stock Exchange 30 Index": {
+    "ticker": "NSENG:NGX30",
+    "tradingview_name": "NGX 30 Index",
+    "isin": null,
+    "type": "index"
+  },
+  "The Nigerian Stock Exchange Banking Index": {
+    "ticker": "NSENG:NGXBNK",
+    "tradingview_name": "NGX Banking Index",
+    "isin": null,
+    "type": "index"
+  },
+  "The Nigerian Stock Exchange Insurance Index": {
+    "ticker": "NSENG:NGXINS",
+    "tradingview_name": "NGX Insurance Index",
+    "isin": null,
+    "type": "index"
+  },
+  "The Nigerian Stock Exchange Oil & Gas Index": {
+    "ticker": "NSENG:NGXOILGAS",
+    "tradingview_name": "NGX Oil/Gas Index",
+    "isin": null,
+    "type": "index"
+  },
+  "The Nigerian Stock Exchange Pension Index": {
+    "ticker": "NSENG:NGXPENSION",
+    "tradingview_name": "NGX Pension Index",
+    "isin": null,
+    "type": "index"
+  },
+  "The Nigerian Stock Exchange Premium Index": {
+    "ticker": "NSENG:NGXPREMIUM",
+    "tradingview_name": "NGX Premium Index",
+    "isin": null,
+    "type": "index"
+  }
+}
